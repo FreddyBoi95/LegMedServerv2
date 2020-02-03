@@ -14,9 +14,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
-class MyServer {
+class Main {
 
     public static void main(String args[]) throws Exception {
         ServerSocket ss = new ServerSocket(3333);
@@ -34,10 +35,10 @@ class MyServer {
 
                 case "hej":
                     System.out.println("client says: " + str);
-                    str2 = "velkommen \n"
+                    str2 = "Velkommen \n"
                             + "angiv dit valg \n"
                             + "horoskop : for at se dagens horoskop \n"
-                            + "læs : for at læse fra fil \n"
+                            + "read : for at læse fra fil \n"
                             + "stop : for at stoppe serveren";
                     break;
 
@@ -45,12 +46,12 @@ class MyServer {
                     str2 = "Meget taler for at dit forår bliver rigtigt interessant";
                     break;
 
-                case "læs":
+                case "read":
                     dout.writeUTF("angiv filnavn");
                     dout.flush();
 
                     str = din.readUTF();
-                    str2 = readLineByLineJava8(str);
+                    str2 = readFromText(str);
                     break;
 
                 default:
@@ -72,16 +73,26 @@ class MyServer {
 
     }
 
+    public static String readFromText(String fileName) throws FileNotFoundException {
 
+        File file = new File(fileName);
+        Scanner scanner = new Scanner(file);
+        String s = "";
 
-    private static String readLineByLineJava8(String filePath) {
-        StringBuilder contentBuilder = new StringBuilder();
-        try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-            stream.forEach(s -> contentBuilder.append(s).append("\n"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        while (scanner.hasNext()) {
+            s = s + scanner.next() + " ";
         }
-        return contentBuilder.toString();
+        return s;
     }
+    //gamle readfromtext, lavet om
+//    private static String readLineByLineJava8(String filePath) {
+//        StringBuilder contentBuilder = new StringBuilder();
+//        try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
+//            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return contentBuilder.toString();
+//    }
 
 }
